@@ -43,3 +43,4 @@ LOGGING:
 
 ASSETS:
   file: /assets/fetch_base/basic.xml
+  robot: /assets/fetch_base/robot.xml

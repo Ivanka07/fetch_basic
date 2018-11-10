@@ -7,3 +7,4 @@ register(
     id='FetchBase-v0',
     entry_point='gym_fetch_base_motions.envs:FetchBaseEnv',
 )
+

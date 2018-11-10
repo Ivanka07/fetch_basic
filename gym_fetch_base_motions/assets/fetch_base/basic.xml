@@ -8,36 +8,53 @@
 	<include file="shared.xml"></include>
 	
 	<worldbody>
-		<geom name="floor0" pos="0.8 0.75 0" size="0.85 0.7 1" type="plane" condim="3" material="floor_mat"></geom>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target1" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+   
+        <geom name="floor0" pos="0.8 0.85 0" size="0.85 0.7 1" type="plane" condim="3" material="floor_mat"></geom>
+        
+        <body name="mocap:g1" pos="0.8 0.8 0" mocap="true">
+			<site name="target0:id1" pos="0.0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target2" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g2" pos="0.8 0.75 0" mocap="true">
+			<site name="target0:id2" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target3" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g3" pos="0.8 0.7 0" mocap="true">
+			<site name="target0:id3" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target4" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g4" pos="0.8 0.65 0" mocap="true">
+			<site name="target0:id4" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target5" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g5" pos="0.8 0.60 0" mocap="true">
+			<site name="target0:id5" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target6" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g6" pos="0.8 0.55 0" mocap="true">
+			<site name="target0:id6" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target7" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g7" pos="0.8 0.50 0" mocap="true">
+			<site name="target0:id7" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target8" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g8" pos="0.8 0.45 0" mocap="true">
+			<site name="target0:id8" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target9" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g9" pos="0.8 0.3 0" mocap="true">
+			<site name="target0:id9" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
-    	<body name="floor0" pos="0.8 0.75 0">
-			<site name="target10" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+    	<body name="mocap:g10" pos="0.8 0.4 0" mocap="true">
+			<site name="target0:id10" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+        </body>
+    	<body name="mocap:g11" pos="0.8 0.35 0" mocap="true">
+			<site name="target0:id11" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+        </body>
+    	<body name="mocap:g12" pos="0.8 0.25 0" mocap="true">
+			<site name="target0:id12" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+        </body>
+    	<body name="mocap:g13" pos="0.8 0.20 0" mocap="true">
+			<site name="target0:id13" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+        </body>
+    	<body name="mocap:g14" pos="0.8 0.15 0" mocap="true">
+			<site name="target0:id14" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+        </body>
+    	<body name="mocap:g15" pos="0.8 0.10 0" mocap="true">
+			<site name="target0:id15" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
         </body>
 		<include file="robot.xml"></include>
 	
