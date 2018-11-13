@@ -42,5 +42,15 @@ LOGGING:
 
 
 ASSETS:
-  file: /assets/fetch_base/basic.xml
+  file: /assets/fetch_base/output.xml
   robot: /assets/fetch_base/robot.xml
+
+PARAMETERS:
+  reachable:
+    offset_x: 0.05
+    offset_y: -0.15
+  dist_threshhold: 0.05
+  gripper_pos:
+    _x: 0.606   
+    _y: -0.039
+    _z: 0.355
