@@ -4,62 +4,23 @@
 	<option timestep="0.002">
 		<flag warmstart="enable"></flag>
 	</option>
-
-	<include file="shared.xml"></include>
 	
 	<worldbody>
    
-        <geom name="floor0" pos="0.8 0.85 0" size="0.85 0.7 1" type="plane" condim="3" material="floor_mat"></geom>
+        <geom name="floor0" pos="0.0 0.0 0" size="1.5 0.7 1" type="plane" condim="3" material="floor_mat"></geom>
         
-        <body name="mocap:g1" pos="0.8 0.8 0" mocap="true">
-			<site name="target0:id1" pos="0.0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
+        <geom name="start" pos="0.0 0.0 0" size="0.1 0.1 0.1" type="box" condim="3" rgba="0 0 1 1" material="floor_mat"></geom>
+        
+        <body name="goal:center_mass" pos="-0.08705431402280003 -0.17086118846022222 1.1765719188592596">
+			<site name="target0:center_mass" pos="0.0 0 0.0" size="0.05 0.0 0.05" rgba="0 1 0 1" type="sphere"></site>
         </body>
-    	<body name="mocap:g2" pos="0.8 0.75 0" mocap="true">
-			<site name="target0:id2" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g3" pos="0.8 0.7 0" mocap="true">
-			<site name="target0:id3" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g4" pos="0.8 0.65 0" mocap="true">
-			<site name="target0:id4" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g5" pos="0.8 0.60 0" mocap="true">
-			<site name="target0:id5" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g6" pos="0.8 0.55 0" mocap="true">
-			<site name="target0:id6" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g7" pos="0.8 0.50 0" mocap="true">
-			<site name="target0:id7" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g8" pos="0.8 0.45 0" mocap="true">
-			<site name="target0:id8" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g9" pos="0.8 0.3 0" mocap="true">
-			<site name="target0:id9" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g10" pos="0.8 0.4 0" mocap="true">
-			<site name="target0:id10" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g11" pos="0.8 0.35 0" mocap="true">
-			<site name="target0:id11" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g12" pos="0.8 0.25 0" mocap="true">
-			<site name="target0:id12" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g13" pos="0.8 0.20 0" mocap="true">
-			<site name="target0:id13" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g14" pos="0.8 0.15 0" mocap="true">
-			<site name="target0:id14" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-    	<body name="mocap:g15" pos="0.8 0.10 0" mocap="true">
-			<site name="target0:id15" pos="0 0 0.5" size="0.02 0.0 0.02" rgba="1 0 0 1" type="sphere"></site>
-        </body>
-		<include file="robot.xml"></include>
-	
-		<light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 0 4" dir="0 0 -1" name="light0"></light>
+        
+
+        
+	    <include file="robot.xml"></include>
+        <light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 0 4" dir="0 0 -1" name="light0"></light>
 	</worldbody>
-	
+
+        <include file="shared.xml"></include>
 	<actuator></actuator>
 </mujoco>

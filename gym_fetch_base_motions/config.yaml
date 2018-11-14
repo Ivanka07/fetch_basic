@@ -49,8 +49,9 @@ PARAMETERS:
   reachable:
     offset_x: 0.05
     offset_y: -0.15
-  dist_threshhold: 0.05
+  dist_threshhold: 0.025
   gripper_pos:
     _x: 0.606   
     _y: -0.039
     _z: 0.355
+  limit_goals: 800
