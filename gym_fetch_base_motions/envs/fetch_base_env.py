@@ -7,15 +7,19 @@ Fetch Environment for basic motions
 
 # core modules
 import math
-import pkg_resources
 import random
+import pkg_resources
+import cfg_load
+
+#config 
+#from fetch_utils import world, config
 
 # 3rd party modules
 from gym import spaces
 from gym.envs.robotics import robot_env
 from gym.envs.robotics import utils
-import cfg_load
 import gym
+
 import numpy as np
 import csv
 
@@ -23,6 +27,7 @@ path = 'config.yaml'
 filepath = pkg_resources.resource_filename('gym_fetch_base_motions', path)
 config = cfg_load.load(filepath)
 world = pkg_resources.resource_filename('gym_fetch_base_motions', config['ASSETS']['file'])
+
 
 
 def distance_goal(goal_a, goal_b):
@@ -45,6 +50,7 @@ class Goal():
 
     def print(self):
         print('Position = {}, id = {}, reached = {} '.format(self.position, self.id, self.reached))
+
 
 
 class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
@@ -161,9 +167,10 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         """
         print('********************* Computing reward *********************')
         distance_threshold = config['PARAMETERS']['dist_threshhold']
-
+        print('All sites ', self.model.body_names)
         grip_pos = self.sim.data.get_site_xpos('robot0:grip')
         print('Gripper position = ', grip_pos)
+
         print('Goal position = ', self.model.body_pos[1])
         dist = distance_goal(self.model.body_pos[1], grip_pos)
         print('Distance to the goal with pos={} is {}'.format(self.model.body_pos[1], dist))
@@ -210,9 +217,8 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         gripper_target = np.array([-0.498, 0.005, -0.431 + self.gripper_extra_height]) + self.sim.data.get_site_xpos('robot0:grip')
         
         print('Set initial position of the endefector = ', gripper_target)
-        
         gripper_rotation = initial_rot
-        
+
         self.sim.data.set_mocap_pos('robot0:mocap', gripper_target)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
         
@@ -284,7 +290,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         print('----------------------------------------')
 
         for pos in range(2,17):
-            print('Goal position  before rotating ', self.model.body_pos[pos])
+            print('Goal position before rotating ', self.model.body_pos[pos])
             self.model.body_pos[pos] = self.goal[pos-2]
             print('Goal position setting ', self.model.body_pos[pos])
 
