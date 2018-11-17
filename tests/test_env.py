@@ -26,6 +26,8 @@ env = gym.make('FetchBase-v0')
 obs = env.reset()
 gripper_position = obs[0:3]
 
+print(env.obs_shape)
+
 print('Initial gripper pos = ', gripper_position)
 get_goals_from_xml(file)
 

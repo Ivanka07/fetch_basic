@@ -11,11 +11,10 @@
         
         <geom name="start" pos="0.0 0.0 0" size="0.1 0.1 0.1" type="box" condim="3" rgba="0 0 1 1" material="floor_mat"></geom>
         
-        <body name="goal:center_mass" pos="-0.08705431402280003 -0.17086118846022222 1.1765719188592596">
+       <!-- <body name="goal:center_mass" pos="-0.08705431402280003 -0.17086118846022222 1.1765719188592596">
 			<site name="target0:center_mass" pos="0.0 0 0.0" size="0.05 0.0 0.05" rgba="0 1 0 1" type="sphere"></site>
-        </body>
+        </body>-->
         
-
         
 	    <include file="robot.xml"></include>
         <light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 0 4" dir="0 0 -1" name="light0"></light>

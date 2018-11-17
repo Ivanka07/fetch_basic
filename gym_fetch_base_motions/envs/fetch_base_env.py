@@ -83,14 +83,15 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
             distance_threshold=0.05, block_gripper=False,
             obj_range=1.0, n_substeps=20
             ):
-
         self.__version__ = "0.1.0"
         print("FetchBaseEnv - Version {}".format(self.__version__))
         # General variables defining the environmen
         # obs: 3d position of goals + reached/unreached state + 
-        obs_shape = (config['PARAMETERS']['limit_goals'] * 4) + 8 
-        observations_space = spaces.Box(-1., 1., shape=(obs_shape,), dtype='float32')
-        actions_space = spaces.Box(-1., 1., shape=(4,), dtype='float32')
+        self.obs_shape = (config['PARAMETERS']['limit_goals'] * 4) + 8 
+        self.act_shape = config['PARAMETERS']['action_shape']
+
+        observations_space = spaces.Box(-1., 1., shape=(self.obs_shape,), dtype='float32')
+        actions_space = spaces.Box(-1., 1., shape=(self.act_shape,), dtype='float32')
 
         initial_qpos = {
             'robot0:slide0': 0.406,
@@ -99,9 +100,6 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         }
 
         initial_rot =  np.array([1., 0., 0.1, 0.0])
-
-        print('Actions %s' % actions_space)
-        print('Observation space %s' % observations_space) 
 
         self.gripper_extra_height = gripper_extra_height 
         self.block_gripper = block_gripper
@@ -139,9 +137,9 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         for g in self.goals:
             goal = [g.position[0], g.position[1], g.position[2], g.reached]
             obs = np.concatenate([obs, goal])
-            #obs = np.concatenate([obs, g.reached])
-        print('Calculated observation %s' % obs)
-        print('Shape %s' % obs.shape)
+
+#        print('Calculated observation at the end %s' % obs)
+ #       print('Shape %s' % obs.shape)
         return obs.copy()
 
     
@@ -155,7 +153,6 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         for i in range(self.num_goals):
             _site = 'target0:id' + str(i)
             goal_pos = self.sim.data.get_site_xpos(_site)
-
             goals_pos.append(goal_pos)
         
         return goals_pos
@@ -165,13 +162,12 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         """Reward is given for a perforing basic motion trajectory .
            R is given for every reached goal in the trajectory
         """
-
         print('********************* Computing reward ****************************')
         distance_threshold = config['PARAMETERS']['dist_threshhold']
         grip_pos = self.sim.data.get_site_xpos('robot0:grip')
         print('Gripper position = ', grip_pos)
 
-    #    print('Goal position = ', self.model.body_pos[1])
+    #   print('Goal position = ', self.model.body_pos[1])
     #   dist = distance_goal(self.model.body_pos[1], grip_pos)
     #   print('Distance to the goal with pos={} is {}'.format(self.model.body_pos[1], dist))
         
@@ -237,7 +233,6 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         body_names = self.model.body_names
         body_pos = self.model.body_pos
         names_to_pos = ids_to_pos(body_names, body_pos)
-
         print('Number of the goals to reach =', self.num_goals)
 
         for k,v in names_to_pos.items():
@@ -300,4 +295,3 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
     def print_goals_state(self):
         for gs in self.goals:
             gs.print()
-

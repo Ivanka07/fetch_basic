@@ -9,6 +9,7 @@ import datetime
 import pkg_resources
 import cfg_load
 import warnings
+import glob
 
 
 '''
@@ -20,13 +21,15 @@ import warnings
 
 path = 'config.yaml' 
 filepath = pkg_resources.resource_filename('gym_fetch_base_motions', path)
+DATA_DIR = pkg_resources.resource_filename('gym_fetch_base_motions', 'data')
+print('Filepath', DATA_DIR)
 config = cfg_load.load(filepath)
 world = pkg_resources.resource_filename('gym_fetch_base_motions', config['ASSETS']['file'])
 
 
 def load_config():
 	config={}
-	config['world'] = world
+	config['basic'] = world
 	config['limit_goals'] = config['PARAMETERS']['limit_goals']
 
 	return config
@@ -59,10 +62,11 @@ def rotate_translate_goals(goals, center_of_mass, angle=90):
 	transl_vec = np.array(gripper_target) - np.array(center_of_mass)
 	result_vector = transl_vec + np.array(center_of_mass)
 
+	#todo: add the x offset
 	for g in goals:
 		g_as_np = np.array(g)
 		g_as_np = R * g_as_np.reshape(3,1)
-		g_as_np = g_as_np + transl_vec.reshape(3,1)
+		g_as_np = g_as_np + transl_vec.reshape(3,1) 
 		g_as_np = g_as_np.reshape(1,3)
 		translated.append([g_as_np[0,0], g_as_np[0,1], g_as_np[0,2]])
 		
@@ -86,22 +90,18 @@ def calc_center_of_mass(goals):
 
 
 
-
-def add_goals_to_env_xml(file, goals, center_of_mass=[]):
+def add_goals_to_env_xml(input_xml, goals, output_xml, center_of_mass=[]):
 	if not len(goals):
 		warnings.warn('List of goals is empty')
-	tree = ET.parse(file)
+	tree = ET.parse(input_xml)
 	root = tree.getroot()
-	print('Root', root.tag)
 	world = root.find('worldbody')
 
 	if len(center_of_mass):
 		center_of_mass_el = world.find('body')
-		print(center_of_mass_el.attrib)
 		center_of_mass_el.set('pos', '{} {} {}'.format(center_of_mass[0], center_of_mass[1], center_of_mass[2]))
 
 	for i in range(len(goals)):
-		
 		if i > config['PARAMETERS']['limit_goals']:
 			break
 
@@ -123,7 +123,7 @@ def add_goals_to_env_xml(file, goals, center_of_mass=[]):
 		site = SubElement(body, 'site', attrib=site_attr)
 		world.append(body)
 
-	tree.write('output.xml')
+	tree.write('./output/' + output_xml + '.xml')
 
 
 
@@ -182,11 +182,45 @@ def ids_to_pos(body_names, body_pos, goal_tag='goal:g'):
 	return goals_to_pos
 
 
+def build_data_set(prefix=None):
+	print(DATA_DIR + prefix)
+	files = glob.glob(DATA_DIR + '/' + prefix + '*.csv')
+
+	for f in files:
+		print('Processing file=', f)
+		output = prefix + f.split(prefix)[1].split('.csv')[0]
+		goals = read_data_csv(f)
+		print('Shape of goals =', len(goals) )
+		center_of_mass = calc_center_of_mass(goals)
+		center_of_mass, _goals = rotate_translate_goals(goals, center_of_mass)
+		add_goals_to_env_xml(world, _goals, output, center_of_mass=[])
+
+
+def agregate_data(data_dir, store_file):
+	obs, acs, rews, ep_rets = [], [], [], [] 
+	files = glob.glob(data_dir + '/' + '*.npz')
+	for f in files:
+		 data = np.load(f)
+		 obs.append(data['obs'])
+		 acs.append(data['acs'])		 
+		 rews.append(data['rews'])
+		 ep_rets.append(data['ep_rets'])
+
+	obs = np.array(obs)
+	acs = np.array(acs)
+	rews = np.array(rews)
+	ep_rets = np.array(ep_rets)
+	print('obs len=%s, acts len= %s, rew Len=%s, ep_rets Len=%s' % (obs.shape, acs.shape, rews.shape, ep_rets.shape)) 
+	np.savez(path, obs=obs, acs=acs, rews=rews, ep_rets=ep_rets) 
+
 
 
 if __name__ == '__main__':
 	#todo: move file into this package data
-	goals = read_data_csv('/home/ivanna/git/generative-learning-by-demonstration/data/triangle_2018-08-23-18-00-42.bag_hand_positions.csv')
-	center_of_mass = calc_center_of_mass(goals)
-	center_of_mass, _goals = rotate_translate_goals(goals, center_of_mass)
-	add_goals_to_env_xml(world, _goals, center_of_mass)
+	#goals = read_data_csv('/home/ivanna/git/generative-learning-by-demonstration/data/triangle_2018-08-23-18-00-42.bag_hand_positions.csv')
+	#center_of_mass = calc_center_of_mass(goals)
+	#center_of_mass, _goals = rotate_translate_goals(goals, center_of_mass)
+	#add_goals_to_env_xml(world, _goals, center_of_mass)
+	#build_data_set(prefix='triangle')
+
+	agregate_data('./output', './output/triangle_aggr_dataset.npz')
