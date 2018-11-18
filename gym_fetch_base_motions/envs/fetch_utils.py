@@ -50,6 +50,7 @@ def read_data_csv(file):
 
 def rotate_translate_goals(goals, center_of_mass, angle=90):
 	assert len(goals) > 2, 'Expecting more then 2 goals for basic motions'
+	print('Goals are=', goals)
 	translated = []
 	theta = np.radians(angle)
 	c, s = np.cos(theta), np.sin(theta)
@@ -93,6 +94,7 @@ def calc_center_of_mass(goals):
 def add_goals_to_env_xml(input_xml, goals, output_xml, center_of_mass=[]):
 	if not len(goals):
 		warnings.warn('List of goals is empty')
+	print('Goals=', goals)
 	tree = ET.parse(input_xml)
 	root = tree.getroot()
 	world = root.find('worldbody')
@@ -211,7 +213,7 @@ def agregate_data(data_dir, store_file):
 	rews = np.array(rews)
 	ep_rets = np.array(ep_rets)
 	print('obs len=%s, acts len= %s, rew Len=%s, ep_rets Len=%s' % (obs.shape, acs.shape, rews.shape, ep_rets.shape)) 
-	np.savez(path, obs=obs, acs=acs, rews=rews, ep_rets=ep_rets) 
+	np.savez(store_file, obs=obs, acs=acs, rews=rews, ep_rets=ep_rets) 
 
 
 
@@ -221,6 +223,6 @@ if __name__ == '__main__':
 	#center_of_mass = calc_center_of_mass(goals)
 	#center_of_mass, _goals = rotate_translate_goals(goals, center_of_mass)
 	#add_goals_to_env_xml(world, _goals, center_of_mass)
-	#build_data_set(prefix='triangle')
+	build_data_set(prefix='triangle')
 
-	agregate_data('./output', './output/triangle_aggr_dataset.npz')
+	#agregate_data('./output', './output/triangle_aggr_dataset.npz')
