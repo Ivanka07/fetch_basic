@@ -55,6 +55,20 @@ def ids_to_pos(body_names, body_pos, goal_tag='goal:g'):
             goals_to_pos[name] = pos           
     return goals_to_pos
 
+def get_goals_from_xml(world):
+
+    print('Current world model =', file)
+    tree = ET.parse(file)
+    root = tree.getroot()
+    print('Root', root.tag)
+    world = root.find('worldbody')
+
+    for body in world.findall('body'):
+        name = body.get('name')
+        if 'goal' in name:
+            pos = body.get('pos')
+            _pos = [float(s) for s in pos.split()]
+            goals.append(_pos)
 
 
 class Goal():
@@ -131,31 +145,30 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
 
         #gripper_state = robot_qpos[-2:]
         gripper_vel = robot_qvel[-2:] * dt  # change to a scalar if the gripper is made symmetric
-        
         obs = np.concatenate([grip_pos, grip_velp, gripper_vel])
-        print('Obs=', obs)
+
         for g in self.goals:
             goal = [g.position[0], g.position[1], g.position[2], g.reached]
             obs = np.concatenate([obs, goal])
-
 #        print('Calculated observation at the end %s' % obs)
- #       print('Shape %s' % obs.shape)
+#        print('Shape %s' % obs.shape)
         return obs.copy()
 
     
     def _sample_goals(self):
-        '''
-        Load goals from the model.xml.
-        Due to workaround we add some random offset to the goals in the configuration
-        '''
-        goals_pos = []
 
-        for i in range(self.num_goals):
-            _site = 'target0:id' + str(i)
-            goal_pos = self.sim.data.get_site_xpos(_site)
-            goals_pos.append(goal_pos)
-        
-        return goals_pos
+        body_names = self.model.body_names
+        body_pos = self.model.body_pos
+        names_to_pos = ids_to_pos(body_names, body_pos)
+        self.goals = []
+        for k,v in names_to_pos.items():
+            random = np.random.uniform(-0.015, 0.015, size=3)
+            v[0] = v[0]+random[0]
+            v[1] = v[1]+random[1]
+            v[2] = v[2]+random[2]      
+            goal_obj = Goal(k, v, False)
+            self.goals.append(goal_obj)
+        return self.goals
 
     
     def _compute_reward(self):
@@ -165,9 +178,9 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         print('********************* Computing reward ****************************')
         distance_threshold = config['PARAMETERS']['dist_threshhold']
         grip_pos = self.sim.data.get_site_xpos('robot0:grip')
-        print('Gripper position = ', grip_pos)
+       # print('Gripper position = ', grip_pos)
 
-    #   print('Goal position = ', self.model.body_pos[1])
+        print('First goal position = ', self.goals[1])
     #   dist = distance_goal(self.model.body_pos[1], grip_pos)
     #   print('Distance to the goal with pos={} is {}'.format(self.model.body_pos[1], dist))
         
@@ -188,19 +201,25 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
 
 
     def reset(self):
+        '''
+        sample new goals after
+        compute new obs
+        '''
+        self._sample_goals()
         return self._get_obs()
 
     
     def _render_callback(self):
        # Visualize target.
         sites_offset = (self.sim.data.site_xpos - self.sim.model.site_pos).copy()
+        print('Number of goals=', self.num_goals)
         for i in range(self.num_goals):
             _site = 'target0:id'  + str(i)
+           # print('Site=', _site)
             site_id = self.sim.model.site_name2id(_site)
-            self.sim.model.site_pos[site_id] = self.goals[i].position - sites_offset[i+2]
+            self.sim.model.site_pos[site_id] = self.goals[i].position - sites_offset[i+1]
         self.sim.forward()
 
-    
 
     #do I need this method actually?
     def _get_state(self):
@@ -229,15 +248,8 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         self.sim.data.set_mocap_pos('robot0:mocap', gripper_target)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
         
-        #set goals
-        body_names = self.model.body_names
-        body_pos = self.model.body_pos
-        names_to_pos = ids_to_pos(body_names, body_pos)
-        print('Number of the goals to reach =', self.num_goals)
-
-        for k,v in names_to_pos.items():
-            goal_obj = Goal(k, v, False)
-            self.goals.append(goal_obj) 
+        self._sample_goals()
+        assert len(self.goals) >0 
 
         for _ in range(10):
             self.sim.step()
@@ -279,7 +291,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         '''
         For basic motions we consider goals that build the trajectory for the figure to mimic
         '''
-        goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-0.15, 0.15, size=3)
+        #goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-0.15, 0.15, size=3)
         return self._sample_goals().copy()
 
 
