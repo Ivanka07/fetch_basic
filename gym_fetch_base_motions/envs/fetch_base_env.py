@@ -175,12 +175,12 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         """Reward is given for a perforing basic motion trajectory .
            R is given for every reached goal in the trajectory
         """
-        print('********************* Computing reward ****************************')
+       # print('********************* Computing reward ****************************')
         distance_threshold = config['PARAMETERS']['dist_threshhold']
         grip_pos = self.sim.data.get_site_xpos('robot0:grip')
        # print('Gripper position = ', grip_pos)
 
-        print('First goal position = ', self.goals[1])
+       # print('First goal position = ', self.goals[1])
     #   dist = distance_goal(self.model.body_pos[1], grip_pos)
     #   print('Distance to the goal with pos={} is {}'.format(self.model.body_pos[1], dist))
         
@@ -196,7 +196,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
             else:
                 reward += 1.0
                     
-        print('Reward computed = ', reward)
+        #print('Reward computed = ', reward)
         return reward
 
 
@@ -297,12 +297,17 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
 
     def _is_success(self, achieved_goal, desired_goal):
         '''
-        Success is True, when all of the goals are reached
+        Hard condition: Success is True, when all of the goals are reached
+        We will try soft condition: if 75% of all goals are reached -> done
         '''
+        has_to_be_reached = 0.8 * self.num_goals
+        is_reached = 0
         for goal in self.goals:
-            if not goal.reached:
-                return False
-        return True
+            if goal.reached:
+                is_reached +=1
+        if has_to_be_reached <= is_reached:
+            print('Consider as done! is_reached=', is_reached) 
+        return has_to_be_reached <=is_reached
 
     def print_goals_state(self):
         for gs in self.goals:
