@@ -157,14 +157,13 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
 
     
     def _sample_goals(self):
-        print('Samling goals')
-
+        print('Sampling goals')
         body_names = self.model.body_names
         body_pos = self.model.body_pos
         names_to_pos = ids_to_pos(body_names, body_pos)
         self.goals = []
         for k,v in names_to_pos.items():
-            random = np.random.uniform(-0.015, 0.015, size=3)
+            random = np.random.uniform(-0.0015, 0.0015, size=3)
             v[0] = v[0]+random[0]
             v[1] = v[1]+random[1]
             v[2] = v[2]+random[2]      
@@ -187,18 +186,25 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
     #   print('Distance to the goal with pos={} is {}'.format(self.model.body_pos[1], dist))
         
         reward = 0.0
+        factor = -1.0
+        only_first_unreached = True
         for i in range(len(self.goals)):
+            dist = distance_goal(grip_pos, self.goals[i].position)
+            print('Distance to the goal with id={} is {}'.format(self.goals[i].id, dist))
+            print('Is the goal with id={} reached {}'.format(self.goals[i].id, self.goals[i].reached))               
             if not self.goals[i].reached:
-                dist = distance_goal(grip_pos, self.goals[i].position)
-
                 if dist < distance_threshold:
-                    reward += 1.0
+                    #reward += 1.0
                     self.goals[i].reached = True
-                    print('Distance to the goal with id={} is {}'.format(self.goals[i].id, dist))
+                    reward = 0.0
+                else:
+                    reward += dist * factor
+                only_first_unreached = False
             else:
-                reward += 1.0
-                    
-        #print('Reward computed = ', reward)
+                reward +=1           
+
+                        
+        print('Reward computed = ', reward)
         return reward
 
 
@@ -214,10 +220,10 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
     def _render_callback(self):
        # Visualize target.
         sites_offset = (self.sim.data.site_xpos - self.sim.model.site_pos).copy()
-        print('Number of goals=', self.num_goals)
+       # print('Number of goals=', self.num_goals)
         for i in range(self.num_goals):
             _site = 'target0:id'  + str(i)
-            print('Site=', _site)
+        #    print('Site=', _site)
             site_id = self.sim.model.site_name2id(_site)
             self.sim.model.site_pos[site_id] = self.goals[i].position - sites_offset[i+1]
         self.sim.forward()
@@ -302,7 +308,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         Hard condition: Success is True, when all of the goals are reached
         We will try soft condition: if 75% of all goals are reached -> done
         '''
-        has_to_be_reached = 0.70 * self.num_goals
+        has_to_be_reached = 0.75 * self.num_goals
         is_reached = 0
         for goal in self.goals:
             if goal.reached:
