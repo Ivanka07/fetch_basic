@@ -102,6 +102,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         # General variables defining the environmen
         # obs: 3d position of goals + reached/unreached state + 
         self.obs_shape = (config['PARAMETERS']['limit_goals'] * 4) + 8 
+       # print('Observation spase has to be =', self.obs_shape)
         self.act_shape = config['PARAMETERS']['action_shape']
 
         observations_space = spaces.Box(-1., 1., shape=(self.obs_shape,), dtype='float32')
@@ -151,11 +152,12 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
             goal = [g.position[0], g.position[1], g.position[2], g.reached]
             obs = np.concatenate([obs, goal])
 #        print('Calculated observation at the end %s' % obs)
-#        print('Shape %s' % obs.shape)
+        #print('Shape %s' % obs.shape)
         return obs.copy()
 
     
     def _sample_goals(self):
+        print('Samling goals')
 
         body_names = self.model.body_names
         body_pos = self.model.body_pos
@@ -215,7 +217,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         print('Number of goals=', self.num_goals)
         for i in range(self.num_goals):
             _site = 'target0:id'  + str(i)
-           # print('Site=', _site)
+            print('Site=', _site)
             site_id = self.sim.model.site_name2id(_site)
             self.sim.model.site_pos[site_id] = self.goals[i].position - sites_offset[i+1]
         self.sim.forward()
@@ -300,7 +302,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         Hard condition: Success is True, when all of the goals are reached
         We will try soft condition: if 75% of all goals are reached -> done
         '''
-        has_to_be_reached = 0.75 * self.num_goals
+        has_to_be_reached = 0.70 * self.num_goals
         is_reached = 0
         for goal in self.goals:
             if goal.reached:

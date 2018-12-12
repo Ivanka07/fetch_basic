@@ -12,9 +12,9 @@ print('Starting gym with version {}'.format(gym.__version__))
 goals = []
 model_dir = pkg_resources.resource_filename('gym_fetch_base_motions', 'assets/fetch_base/')
 actions_dir = pkg_resources.resource_filename('gym_fetch_base_motions', 'data/actions/')
-obs_csv = pkg_resources.resource_filename('gym_fetch_base_motions', 'data/expert_traj/triangle_obs.csv')
-acs_csv = pkg_resources.resource_filename('gym_fetch_base_motions', 'data/expert_traj/triangle_acs.csv')
-rew_csv = pkg_resources.resource_filename('gym_fetch_base_motions', 'data/expert_traj/triangle_rew.csv')
+obs_csv = pkg_resources.resource_filename('gym_fetch_base_motions', 'data/expert_traj/triangle_3_goals_obs.csv')
+acs_csv = pkg_resources.resource_filename('gym_fetch_base_motions', 'data/expert_traj/triangle_3_goals_acs.csv')
+rew_csv = pkg_resources.resource_filename('gym_fetch_base_motions', 'data/expert_traj/triangle_3_goals_rew.csv')
 
 
 
@@ -124,6 +124,7 @@ while True:
 	ac = [vec[0], vec[1], vec[2], 2.5]
 	acs.append(ac)
 	cur_obs, r, done, info = env.step(ac)
+	print('Cur_obs=', len(Cur_obs))
 	obs.append(cur_obs)
 	rews.append(r)
 	gripper_position = np.array(cur_obs[0:3])

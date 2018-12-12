@@ -42,7 +42,7 @@ LOGGING:
 
 
 ASSETS:
-  file: /assets/fetch_base/triangle_2018-08-23-18-01-52.bag_hand_positions.xml
+  file: /assets/fetch_base/triangle_2018-08-23-17-59-45.bag_hand_positions.xml
   robot: /assets/fetch_base/robot.xml
   basic: /assets/fetch_base/basic.xml
 
@@ -50,11 +50,11 @@ PARAMETERS:
   reachable:
     offset_x: 0.1
     offset_y: -0.15
-  dist_threshhold: 0.05
+  dist_threshhold: 0.1
   gripper_pos:
     _x: 0.606   
     _y: -0.039
     _z: 0.355
-  limit_goals: 41
+  limit_goals: 3
   action_shape: 4
   episode_length: 450

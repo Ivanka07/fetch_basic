@@ -10,6 +10,9 @@ import pkg_resources
 import cfg_load
 import warnings
 import glob
+from mpl_toolkits import mplot3d
+import matplotlib.pyplot as plt
+
 
 
 '''
@@ -71,8 +74,8 @@ def rotate_translate_goals(goals, center_of_mass, downsampling=True, angle=90):
 		g_as_np = g_as_np + transl_vec.reshape(3,1) 
 		g_as_np = g_as_np.reshape(1,3)
 		
-		if i % 20 == 0:
-			_goals.append([g_as_np[0,0] - config['PARAMETERS']['reachable']['offset_x'], g_as_np[0,1], g_as_np[0,2]])
+		#if i % 80 == 0:
+		_goals.append([g_as_np[0,0] - config['PARAMETERS']['reachable']['offset_x'], g_as_np[0,1], g_as_np[0,2]])
 		_actions.append([g_as_np[0,0] - config['PARAMETERS']['reachable']['offset_x'], g_as_np[0,1], g_as_np[0,2]])
 		i+=1
 	
@@ -93,6 +96,7 @@ def calc_center_of_mass(goals):
 
 	print('calculated center of  center ', center_of_mass)
 	return center_of_mass
+
 
 
 
@@ -163,6 +167,38 @@ def ids_to_pos(body_names, body_pos, goal_tag='goal:g'):
 
 	return goals_to_pos
 
+def build_triangle_from_goals(goals):
+	
+	min_y = []
+	max_y = []
+	max_z = []
+
+	min_y_dist = 100
+	max_y_dist = 0
+	max_z_dist = 0
+
+	_goals = []
+
+	for goal in goals:
+		if goal[1] < min_y_dist:
+			min_y_dist = goal[1]
+			min_y = goal
+		
+		if goal[1] > max_y_dist:
+			max_y_dist = goal[1]
+			max_y = goal
+
+		if goal[2] > max_z_dist:
+			max_z_dist = goal[2]
+			max_z = goal
+	print('Found usefull goals', max_z, min_y, max_y)
+
+	_goals.append(min_y)
+	_goals.append(max_y)
+	_goals.append(max_z)
+
+	return _goals
+
 
 
 def build_data_set(prefix=None):
@@ -178,7 +214,8 @@ def build_data_set(prefix=None):
 		center_of_mass = calc_center_of_mass(goals)
 		center_of_mass, _goals, actions = rotate_translate_goals(goals, center_of_mass)
 		store_as_csv(actions, actions_file)
-		#add_goals_to_env_xml(world, _goals, output, center_of_mass=[])
+		_goals = build_triangle_from_goals(_goals)
+		add_goals_to_env_xml(world, _goals, output, center_of_mass=[])
 
 
 def agregate_data(data_dir, store_file):
@@ -212,6 +249,24 @@ def store_as_csv(actions, file, separator=' '):
 		for a in actions:
 			acs_writer.writerow(a)
 
+def plot(ar):
+
+	fig = plt.figure()
+	ax = plt.axes(projection='3d')
+
+	# Data for a three-dimensional line
+	zline = np.linspace(0, 15, 1000)
+	xline = np.sin(zline)
+	yline = np.cos(zline)
+	ax.plot3D(xline, yline, zline, 'gray')
+
+	# Data for three-dimensional scattered points
+	zdata = 15 * np.random.random(100)
+	xdata = np.sin(zdata) + 0.1 * np.random.randn(100)
+	ydata = np.cos(zdata) + 0.1 * np.random.randn(100)
+	ax.scatter3D(xdata, ydata, zdata, c=zdata, cmap='Greens');
+	plt.show()
+	
 
 if __name__ == '__main__':
 	#todo: move file into this package data
@@ -222,5 +277,5 @@ if __name__ == '__main__':
 	#add_goals_to_env_xml(world, _goals, cur_csv_file, center_of_mass)
 	#agregate_data('./output', './output/triangle_aggr_dataset.npz')
 	build_data_set(prefix='triangle')
-
+	#plot(None)
 	
