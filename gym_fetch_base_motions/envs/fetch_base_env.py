@@ -205,6 +205,7 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
 
                         
         print('Reward computed = ', reward)
+        self.reward = reward
         return reward
 
 
@@ -308,14 +309,20 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         Hard condition: Success is True, when all of the goals are reached
         We will try soft condition: if 75% of all goals are reached -> done
         '''
-        has_to_be_reached = 0.75 * self.num_goals
-        is_reached = 0
-        for goal in self.goals:
-            if goal.reached:
-                is_reached +=1
-        if has_to_be_reached <= is_reached:
-            print('Consider as done! is_reached=', is_reached) 
-        return has_to_be_reached <=is_reached
+        print('*****************Is success?*****************')
+        has_to_be_reached = 0.65 * 3.0 #self.num_goals
+       # is_reached = 0
+       # for goal in self.goals:
+       #     if goal.reached:
+       #         is_reached +=1
+       # if has_to_be_reached <= is_reached:
+       #    print('Consider as done! is_reached=', is_reached) 
+        #return has_to_be_reached <=is_reached
+        print('Consider as done if reward={}, but is={}, '.format(has_to_be_reached, self.reward))
+        if has_to_be_reached <= self.reward:
+            print('Consider as done! Reward=', self.reward)
+        return has_to_be_reached <= self.reward
+
 
     def print_goals_state(self):
         for gs in self.goals:
