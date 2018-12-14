@@ -309,7 +309,6 @@ class FetchBaseEnv(robot_env.RobotEnv, gym.utils.EzPickle):
         Hard condition: Success is True, when all of the goals are reached
         We will try soft condition: if 75% of all goals are reached -> done
         '''
-        print('*****************Is success?*****************')
         has_to_be_reached = 0.65 * 3.0 #self.num_goals
        # is_reached = 0
        # for goal in self.goals:
